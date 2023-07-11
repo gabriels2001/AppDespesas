@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'models/transaction.dart';
 import 'components/transaction_list.dart';
+import 'components/chart.dart';
 
 class WebView extends StatelessWidget {
   WebView({super.key});
@@ -21,7 +22,7 @@ class WebView extends StatelessWidget {
       theme: tema.copyWith(
         colorScheme: tema.colorScheme.copyWith(
           primary: Colors.purple,
-          secondary: Colors.amber,
+          secondary: Colors.purple[600],
         ),
       ),
     );
@@ -38,18 +39,36 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _transactions = [
     Transaction(
-      id: 't1',
-      title: 'Novo Tenis de Corrida',
+      id: 't0',
+      title: 'Conta antiga',
       value: 310.76,
-      date: DateTime.now(),
+      date: DateTime.now().subtract(Duration(days: 33)),
     ),
     Transaction(
       id: 't2',
       title: 'Conta de Luz',
       value: 210.76,
+      date: DateTime.now().subtract(Duration(days: 4)),
+    ),
+    Transaction(
+      id: 't3',
+      title: 'Boleto',
+      value: 120.76,
+      date: DateTime.now().subtract(Duration(days: 4)),
+    ),
+    Transaction(
+      id: 't4',
+      title: 'Conta de Luz',
+      value: 98.50,
       date: DateTime.now(),
     ),
   ];
+
+  List<Transaction> get _recentTransacton {
+    return _transactions.where((tr) {
+      return tr.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
+    }).toList();
+  }
 
   _addTransaction(String title, double value) {
     final newTransaction = Transaction(
@@ -90,13 +109,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              child: Card(
-                color: Colors.blue,
-                elevation: 5,
-                child: Text('grafico'),
-              ),
-            ),
+            Chart(_recentTransacton),
+            // ERRO- Chart(_recentTransacton, recentTransaction: []),
             TransactionList(_transactions),
           ],
         ),
@@ -109,12 +123,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-
-
-// Column(
-//    children: [
-//      TransactionForm(_addTransaction),
-//   //dados 
-//          ],
-//             ),

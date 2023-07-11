@@ -18,14 +18,15 @@ class _TransactionFormState extends State<TransactionForm> {
 
   final valuecontroller = TextEditingController();
 
-  _submitForm(_) {
+  _submitForm() {
     final title = titlecontroller.text;
-    final value = double.tryParse(valuecontroller.text) ?? 0.0;
+    final value = double.tryParse(valuecontroller.text) ?? 0.00;
 
     if (title.isEmpty || value <= 0) {
       return;
     }
 
+    //widget.onSubmit(title, value);
     widget.onSubmit(title, value);
   }
 
@@ -39,7 +40,7 @@ class _TransactionFormState extends State<TransactionForm> {
           children: <Widget>[
             TextField(
               controller: titlecontroller,
-              onSubmitted: (_) => _submitForm(_),
+              onSubmitted: (_) => _submitForm(),
               keyboardType: TextInputType.numberWithOptions(
                   decimal: true), //mostar teclado em num.
               decoration: InputDecoration(
@@ -49,7 +50,7 @@ class _TransactionFormState extends State<TransactionForm> {
             ),
             TextField(
               controller: valuecontroller,
-              //onSubmitted: (_) => _submitForm(_),
+              onSubmitted: (_) => _submitForm(),
               decoration: InputDecoration(
                 labelText: 'Valor (R\$)',
               ),
@@ -59,7 +60,7 @@ class _TransactionFormState extends State<TransactionForm> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 ElevatedButton(
-                  onPressed: _submitForm(widget.onSubmit),
+                  onPressed: _submitForm,
                   child: Text(
                     'Nova Transação',
                   ),
