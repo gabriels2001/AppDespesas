@@ -6,65 +6,80 @@ import '../models/transaction.dart';
 import 'package:intl/intl.dart';
 
 class TransactionList extends StatelessWidget {
-  //const TransactionList({super.key});
-
   final List<Transaction> transactions;
+  final void Function(String) onRemove;
 
-  TransactionList(this.transactions, {super.key});
+  TransactionList(this.transactions, {super.key, required this.onRemove});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 300,
-      child: transactions.isEmpty
-          ? Column(
-              children: <Widget>[
-                Text('Nenhuma Transação Cadastrada'),
-                //style: Theme.of(context).textTheme.title,
-                SizedBox(height: 20),
-                SizedBox(
-                  height: 200,
-                  child: Image.asset(
-                    'assets/images/waiting.png',
-                    fit: BoxFit.cover,
+    return transactions.isEmpty
+        ? LayoutBuilder(
+            builder: (context, constraints) {
+              return Column(
+                children: <Widget>[
+                  SizedBox(height: constraints.maxHeight * 0.05),
+                  SizedBox(
+                      height: constraints.maxHeight * 0.3,
+                      child: Text('Nenhuma Transação Cadastrada')),
+                  //style: Theme.of(context).textTheme.title,
+                  SizedBox(height: constraints.maxHeight * 0.05),
+                  SizedBox(
+                    height: constraints.maxHeight * 0.6,
+                    child: Image.asset(
+                      'assets/images/waiting.png',
+                      fit: BoxFit.cover,
+                    ),
                   ),
+                ],
+              );
+            },
+          )
+        : ListView.builder(
+            itemCount: transactions.length, // quantidade da lista
+            itemBuilder: (context, index) {
+              // contexto, e qual elemento renderizar
+              final tr = transactions[index];
+              return Card(
+                elevation: 8,
+                margin: EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 9,
                 ),
-              ],
-            )
-          : ListView.builder(
-              itemCount: transactions.length, // quantidade da lista
-              itemBuilder: (context, index) {
-                // contexto, e qual elemento renderizar
-                final tr = transactions[index];
-                return Card(
-                  elevation: 8,
-                  margin: EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 9,
-                  ),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      radius: 30,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: SizedBox(
-                          height: 20,
-                          child: FittedBox(
-                            child: Text('R\$${tr.value}'),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.purple,
+                    radius: 30,
+                    child: Padding(
+                      padding: const EdgeInsets.all(6),
+                      child: FittedBox(
+                        child: Text(
+                          'R\$${tr.value}',
+                          style: const TextStyle(
+                            color: Colors.white,
                           ),
                         ),
                       ),
                     ),
-                    title: Text(
-                      tr.title,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    subtitle: Text(DateFormat('d MMM y').format(tr.date)),
                   ),
-                );
-              },
-            ),
-    );
+                  title: Text(
+                    tr.title,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  subtitle: Text(DateFormat('d MMM y').format(tr.date)),
+                  trailing: MediaQuery.of(context).size.width > 400
+                      ? ElevatedButton(
+                          onPressed: () => onRemove(tr.id),
+                          child: child,
+                        )
+                      : IconButton(
+                          onPressed: () => onRemove(tr.id),
+                          icon: Icon(Icons.delete),
+                        ),
+                ),
+              );
+            },
+          );
   }
 }
 

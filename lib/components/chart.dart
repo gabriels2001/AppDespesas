@@ -48,6 +48,8 @@ class Chart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //final alturaDisponivel = MediaQuery.of(context).size.height;
+
     return Card(
       elevation: 6,
       margin: EdgeInsets.all(20),
@@ -56,13 +58,17 @@ class Chart extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: groupedTransactions.map((tr) {
-            return //Text('${tr['day']}: ${tr['value']}');
-                Flexible(
+            return Flexible(
               fit: FlexFit.tight,
               child: ChartBar(
                 label: tr['day'].toString(),
                 value: tr['value'] as double,
-                percentage: (tr['value'] as double) / _weekTotalValue,
+                percentage: _weekTotalValue == 0
+                    ? 0
+                    : (tr['value'] as double) / _weekTotalValue,
+
+                //_weekTotalValue == 0 ? 0 : (tr['value'] as double) / _weekTotalValue,
+                //_weekTotalValue == 0 ? 0 : (tr['value'] as double),
               ),
             );
           }).toList(),
